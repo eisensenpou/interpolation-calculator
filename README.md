@@ -166,6 +166,21 @@ This is a portfolio project demonstrating clean architecture and modern C++ prac
 - Maintain separation between UI and business logic
 - Use consistent naming and code style
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+This means you are free to:
+- Use the software commercially
+- Modify and distribute the software
+- Use it in private projects
+- Include it in larger works
+
+Under the conditions that you:
+- Include the copyright notice
+- Include the license file
+- Hold the original author harmless
+
 ---
 
 *Built with modern C++17 and SFML for cross-platform desktop applications.*
