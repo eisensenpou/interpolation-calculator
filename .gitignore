@@ -1,0 +1,42 @@
+# Ignore everything by default
+*
+
+# Allow Git to traverse directories
+!*/
+
+# --- Root files ---
+!.gitignore
+!CMakeLists.txt
+!todo.md
+
+# --- Source code ---
+!src/
+!src/**/*.cpp
+!src/**/*.h
+
+!ui/
+!ui/**/*.cpp
+!ui/**/*.h
+
+# --- Assets ---
+!assets/
+!assets/**
+
+# --- Explicitly ignore build output ---
+build/
+build/**
+
+# --- CMake-generated files (if in-source build happens) ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# --- Editor / OS junk ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
