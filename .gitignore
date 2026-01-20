@@ -8,6 +8,10 @@
 !.gitignore
 !CMakeLists.txt
 !todo.md
+!demo.sh
+!LICENSE
+!README.md
+!PORTFOLIO.md
 
 # --- Source code ---
 !src/

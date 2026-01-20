@@ -249,6 +249,9 @@ int main()
     
     // Help overlay
     bool showHelp = false;
+    
+    // Tab key state tracking to prevent spam
+    bool tabWasDown = false;
     sf::RectangleShape helpOverlay;
     helpOverlay.setSize(UILayout::HELP_OVERLAY_SIZE);
     helpOverlay.setPosition(UILayout::HELP_OVERLAY_POS);
@@ -297,9 +300,14 @@ int main()
                 
                 if (event.key.code == sf::Keyboard::Tab)
                 {
-                    currentMode = cycleMode(currentMode);
-                    feedbackText.setString("Mode: " + getModeInfo(currentMode).name);
-                    feedbackClock.restart();
+                    // Prevent Tab spam by checking state change
+                    bool tabIsDown = sf::Keyboard::isKeyPressed(sf::Keyboard::Tab);
+                    if (tabIsDown && !tabWasDown) {
+                        currentMode = cycleMode(currentMode);
+                        feedbackText.setString("Mode: " + getModeInfo(currentMode).name);
+                        feedbackClock.restart();
+                    }
+                    tabWasDown = tabIsDown;
                 }
                 else if (event.key.code >= sf::Keyboard::Num1 && event.key.code <= sf::Keyboard::Num3)
                 {
@@ -316,13 +324,17 @@ int main()
                 }
             }
 
-            sf::Vector2f mousePos =
-                static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
+            // Handle UI events only when help overlay is not active
+            if (!showHelp)
+            {
+                sf::Vector2f mousePos =
+                    static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
 
-            inputA.handleEvent(event, mousePos);
-            inputB.handleEvent(event, mousePos);
-            slider.handleEvent(event, mousePos);
-            resetButton.handleEvent(event, mousePos);
+                inputA.handleEvent(event, mousePos);
+                inputB.handleEvent(event, mousePos);
+                slider.handleEvent(event, mousePos);
+                resetButton.handleEvent(event, mousePos);
+            }
             
             // Reset button click handling
             if (resetButton.wasClicked())
@@ -451,11 +463,16 @@ int main()
         
         switch (currentMode) {
             case Mode::TemperatureGradient:
-                // Physics-based coloring: temperature maps to intuitive colors
-                pointColor = temperatureToColor(result, val1, val2);
-                lineStartColor = temperatureToColor(val1, val1, val2); // T0 color
-                lineEndColor = temperatureToColor(val2, val1, val2);   // T1 color
-                break;
+                {
+                    // Physics-based coloring: temperature maps to intuitive colors
+                    // Ensure val1 <= val2 for consistent color mapping
+                    float tempMin = std::min(val1, val2);
+                    float tempMax = std::max(val1, val2);
+                    pointColor = temperatureToColor(result, tempMin, tempMax);
+                    lineStartColor = temperatureToColor(val1, tempMin, tempMax);
+                    lineEndColor = temperatureToColor(val2, tempMin, tempMax);
+                    break;
+                }
             case Mode::CustomScale:
                 // Visual distinction: purple theme for scaling operations
                 pointColor = sf::Color(128, 0, 255); // Purple for interpolated result

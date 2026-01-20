@@ -29,10 +29,17 @@ void Slider::handleEvent(const sf::Event& event, sf::Vector2f mousePos)
     {
         float left = bar.getPosition().x;
         float right = left + bar.getSize().x;
+        float width = bar.getSize().x;
 
         float x = std::clamp(mousePos.x, left, right);
         knob.setPosition(x, knob.getPosition().y);
-        value = (x - left) / bar.getSize().x;
+        
+        // Avoid division by zero
+        if (std::abs(width) > 1e-6f) {
+            value = (x - left) / width;
+        } else {
+            value = 0.f;
+        }
     }
 }
 

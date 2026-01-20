@@ -152,5 +152,26 @@ void InputBox::setValue(float value)
 void InputBox::draw(sf::RenderWindow& window)
 {
     window.draw(box);
-    window.draw(text);
+    
+    // Handle text overflow by clipping or adjusting size
+    float maxWidth = box.getSize().x - 16.f; // 8px padding on each side
+    if (text.getLocalBounds().width > maxWidth)
+    {
+        // Create a clipped version by adjusting text
+        sf::Text clippedText = text;
+        std::string original = text.getString().toAnsiString();
+        
+        // Try progressively shorter strings until it fits
+        while (!original.empty() && clippedText.getLocalBounds().width > maxWidth)
+        {
+            original.pop_back();
+            clippedText.setString(original + "...");
+        }
+        
+        window.draw(clippedText);
+    }
+    else
+    {
+        window.draw(text);
+    }
 }
